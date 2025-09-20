@@ -1,7 +1,7 @@
 relay_ros2_mqtt:
   ros__parameters:
     mqtt:
-      broker_ip_address: "10.42.0.218"
+      broker_ip_address: "10.42.0.1"
       state_sub_topic: "/omnicare/navigation/state"
       battery_sub_topic: "/omnicare/status/battery"
       mqtt_state_pub_topic: "/esp32/navigation/state"
@@ -14,8 +14,8 @@ relay_ros2_mqtt:
         b: "run.omnicare_behavior.behavior_manager"
         x: ""
         y: ""
-        # start: "omnicare_bringup.load_sim_robot"
-        start: ""
+        start: "launch.omnicare_bringup.load_real_robot"
+        # start: ""
 
       teleop:
         right: -0.5
