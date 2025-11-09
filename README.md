@@ -8,17 +8,17 @@
 
 ## 📑 Table of Contents
 
-- [Overview](#overview)
-- [Getting Started](#getting-started)
+- [Overview](#-overview)
+- [Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-- [Usage](#usage)
+- [Usage](#-usage)
   - [Parameters](#parameters)
   - [Topics (ROS ↔ MQTT)](#topics-ros--mqtt)
   - [Controller Mappings](#controller-mappings)
-- [Project Structure](#project-structure)
-- [Roadmap](#roadmap)
-- [License](#license)
+- [Project Structure](#-project-structure)
+- [Roadmap](#-roadmap)
+- [License](#-license)
 
 ---
 
