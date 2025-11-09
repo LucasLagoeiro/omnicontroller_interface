@@ -1,11 +1,11 @@
 from typing import Dict, Callable
 from geometry_msgs.msg import Twist
 
-# --- Helpers ---
+# Guarda o último comando de movimento
 last_velocity_command = ""
 
 def start_launcher(launchers: Dict[str, object], logger, key: str):
-    """Inicia um launcher específico."""
+    """Inicia um processo do ROS2 (launch/run) associado a um botão."""
     proc = launchers.get(key)
     if not proc:
         logger.error(f"Launcher '{key}' não configurado")
@@ -16,20 +16,23 @@ def start_launcher(launchers: Dict[str, object], logger, key: str):
     except Exception as e:
         logger.error(f"Falha ao iniciar {key}: {e}")
 
-def stop_robot(label,last_velocity_command) -> bool:
+def stop_robot(label, last_velocity_command) -> bool:
+    """Retorna True se o comando for oposto ao anterior (para parar o robô)."""
     return (label == "Right" and last_velocity_command == "Left") or \
            (label == "Left" and last_velocity_command == "Right") or \
            (label == "Up" and last_velocity_command == "Down") or \
            (label == "Down" and last_velocity_command == "Up")
 
 def drive(node, pub_speed, logger, timer=0.15, vx=0.0, vy=0.0, wz=0.0, label: str = ""):
-    """Publica um Twist para movimentação."""
+    """Publica uma mensagem Twist no tópico cmd_vel para movimentar o robô."""
     global last_velocity_command
 
-    if stop_robot(label,last_velocity_command):
+    # Verifica se precisa parar o robô
+    if stop_robot(label, last_velocity_command):
         pub_speed.publish(Twist())
         logger.info("Stop")
     else:
+        # Cria mensagem Twist
         t = Twist()
         t.linear.x = vx
         t.linear.y = vy
@@ -39,7 +42,6 @@ def drive(node, pub_speed, logger, timer=0.15, vx=0.0, vy=0.0, wz=0.0, label: st
         logger.info(label)
         
     last_velocity_command = label
-    
 
 
 def stop_all(launchers: Dict[str, object], pub_speed, logger):
@@ -54,32 +56,28 @@ def stop_all(launchers: Dict[str, object], pub_speed, logger):
 
 
 def unknown(logger, msg: str):
-    """Handler default para comandos inválidos."""
-    logger.info(f"Unknown command: {msg}")
+    """Handler padrão para comandos desconhecidos."""
+    logger.info(f"Comando desconhecido: {msg}")
 
-
-# --- Builder principal ---
 
 def build_handlers(launchers: Dict[str, object], pub_speed, node, logger) -> Dict[str, Callable[[], None]]:
     """
-    Cria o dicionário de handlers.
-    - launchers: dict { "button_a": ROS2LaunchProc(...), ... }
-    - pub_speed: publisher de Twist
-    - logger: self.get_logger()
+    Cria um dicionário de handlers:
+    - Cada botão pode acionar um launcher ou um comando de movimento.
     """
     handlers: Dict[str, Callable[[], None]] = {}
 
-    # Launchers → cria handler para cada chave
+    # Cria handler para cada launcher definido
     for name in launchers.keys():
         handlers[name] = (lambda n=name: start_launcher(launchers, logger, n))
 
-    # Movimentos (exemplo fixo)
+    # Handlers fixos para movimento manual
     handlers.update({
-        "RIGHT":       lambda: drive(node=node, pub_speed=pub_speed, logger=logger, wz=-0.5,  label="Right"),
-        "LEFT":        lambda: drive(node=node, pub_speed=pub_speed, logger=logger, wz=+0.5,  label="Left"),
-        "UP":          lambda: drive(node=node, pub_speed=pub_speed, logger=logger, vx=+0.3,  label="Up"),
-        "DOWN":        lambda: drive(node=node, pub_speed=pub_speed, logger=logger, vx=-0.3,  label="Down"),
-        "select":      lambda: stop_all(launchers, pub_speed, logger),
+        "RIGHT":  lambda: drive(node=node, pub_speed=pub_speed, logger=logger, wz=-0.5, label="Right"),
+        "LEFT":   lambda: drive(node=node, pub_speed=pub_speed, logger=logger, wz=+0.5, label="Left"),
+        "UP":     lambda: drive(node=node, pub_speed=pub_speed, logger=logger, vx=+0.3, label="Up"),
+        "DOWN":   lambda: drive(node=node, pub_speed=pub_speed, logger=logger, vx=-0.3, label="Down"),
+        "select": lambda: stop_all(launchers, pub_speed, logger),
     })
 
     return handlers
