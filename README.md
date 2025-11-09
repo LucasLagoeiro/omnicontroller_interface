@@ -4,7 +4,7 @@
 
 ![Language](https://img.shields.io/badge/Python-100%25-blue)
 ![ROS2](https://img.shields.io/badge/ROS2-Humble-%2300add8)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
+![License](https://img.shields.io/badge/license-MIT-success)
 
 ## 📑 Table of Contents
 
