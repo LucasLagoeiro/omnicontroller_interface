@@ -2,10 +2,9 @@
 
 
 
-![Last commit](https://img.shields.io/badge/last%20commit-today-success)
 ![Language](https://img.shields.io/badge/Python-100%25-blue)
 ![ROS2](https://img.shields.io/badge/ROS2-Humble-%2300add8)
-![License](https://img.shields.io/badge/license-TBD-lightgrey)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 ## 📑 Table of Contents
 
@@ -147,7 +146,11 @@ Testes manuais:
 ```bash
 ros2 topic pub -1 /omnicare/navigation/state std_msgs/String "{data: 'READY'}"
 ```
-Verifique no MQTT (`mqtt_state_pub_topic`) se a mensagem é retransmitida corretamente.
+Verifique no MQTT (`mqtt_state_pub_topic`) se a mensagem é retransmitida corretamente. Exemplo: 
+```bash
+mosquitto_sub -h 192.168.0.129 -t /esp32/navigation/state
+```
+
 
 ---
 
@@ -172,10 +175,15 @@ omnicontroller_interface/
     └── setup.cfg
 ```
 
+## 🧭 Roadmap
+
+- [ ] Passar para C++ o código.  
+- [ ] Publicar pacote no ROS Index.
+
 ## 📜 License
 
-⚠️ O `package.xml` ainda está com `TODO: License`.  
-Recomenda-se utilizar **MIT License** ou **Apache 2.0**.  
+Este projeto está licenciado sob os termos da **MIT License**.  
+Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
 

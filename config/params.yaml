@@ -1,7 +1,7 @@
 relay_ros2_mqtt:
   ros__parameters:
     mqtt:
-      broker_ip_address: "10.42.0.1"
+      broker_ip_address: "192.168.15.115"
       state_sub_topic: "/omnicare/navigation/state"
       battery_sub_topic: "/omnicare/status/battery"
       mqtt_state_pub_topic: "/esp32/navigation/state"
@@ -22,3 +22,6 @@ relay_ros2_mqtt:
         left: 0.5
         up: 0.5
         down: -0.5
+
+      ina219:
+        read_voltage: false

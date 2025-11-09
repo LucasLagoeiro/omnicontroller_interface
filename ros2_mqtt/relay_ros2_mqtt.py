@@ -43,8 +43,6 @@ class RelayRos2Mqtt(Node):
         self.mqttclient.on_message = self.on_message
         self.mqttclient.loop_start()
 
-        # Initialize INA219 sensor
-        self.INA219 = INA219() 
 
         self.get_logger().info('relay_ros2_mqtt:: started...')
         self.get_logger().info(f'relay_ros2_mqtt:: broker_address = {self.broker_address}')
@@ -94,14 +92,17 @@ class RelayRos2Mqtt(Node):
                                                 self.get_logger())
 
 
+        read_voltage = self.declare_parameter("ina219.read_voltage", "").value # Read read_voltage parameter from yaml file
+        self.INA219 = INA219()  # Initialize INA219 sensor
+
         # Pubs
         self.battery_pub = self.create_publisher(
             String, 
             self.ROS_BATTERY_PUB_TOPIC, 
             qos_profile_system_default)
         
-        # Timer that sends every 1.0s (1 Hz)
-        self.timer = self.create_timer(1.0, self.publish_battery_status)
+        if read_voltage:
+            self.timer = self.create_timer(1.0, self.publish_battery_status) # Timer that sends every 1.0s (1 Hz)
 
         # Subs
         self.create_subscription(
